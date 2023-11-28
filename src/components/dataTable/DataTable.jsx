@@ -4,6 +4,7 @@ import {useNavigate,Link} from 'react-router-dom'
 import "./datatable.scss";
 import { Button } from '@mui/material';
 import axios from 'axios';
+import './datatable.scss'
 const DataTable = (props) => {
 
   const navigate = useNavigate();

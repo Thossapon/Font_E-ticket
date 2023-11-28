@@ -1,0 +1,43 @@
+ul {
+    li {
+      list-style-type: none;
+      position: relative;
+      width: 1.5px;
+      padding-top: 50px;
+      background-color: #f45b69;
+
+      &::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #f45b69;
+        transform: translateX(-50%);
+      }
+      // &:first-child::after {
+      //   background-color: rgb(40, 104, 90); /* Green color */
+      // }
+
+      div {
+        min-width: 480px;
+        padding: 15px;
+        background-color: #a1959610;
+
+        @include md{
+          min-width: 250px;
+        }
+
+        p{
+          margin-bottom: 5px;
+        }
+
+        time{
+          font-size: 12px;
+        }
+
+      }
+    }
+  }

@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react'
 import { Link, useNavigate } from "react-router-dom"
 import { AuthContext} from "../../context/authContext";
 import {DarkModeContext} from '../../context/darkModeContext'
+import Register from '../register/Register';
 import axios from 'axios';
 const Login = () => {
     const [inputs, setInputs] = useState({
@@ -13,7 +14,7 @@ const Login = () => {
     const handleChange = (e) => {
         setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
-    const {login} = useContext(AuthContext);
+    const { login } = useContext(AuthContext);
     const {darkMode} = useContext(DarkModeContext);
 
     const handleLogin = async (e) => {

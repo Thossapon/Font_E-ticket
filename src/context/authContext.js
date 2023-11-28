@@ -1,23 +1,37 @@
 import axios from "axios";
-import { createContext,useEffect,useState } from "react";
-
+import { createContext, useEffect, useState } from "react";
+import { useNavigate,redirect } from "react-router-dom";
 export const AuthContext = createContext({});
 
-export const AuthContextProvider = ({children}) => {
+export const AuthContextProvider = ({ children }) => {
 
   const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem("user") || null));
-
-  const login = async (inputs) => 
-  {
-    const res = await axios.post("http://172.16.10.151:8800/api/auth/login",inputs,{withCredentials:true})
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  
+  const login = async (inputs) => {
+    setLoggedIn(true);
+    const res = await axios.post("http://172.16.10.151:8800/api/auth/login", inputs, { withCredentials: true })
     setCurrentUser(res.data);
+    localStorage.setItem('isLoggedIn', isLoggedIn);
   }
+  const logout = async () => {
+    setLoggedIn(false);
+    localStorage.clear('isLoggedIn','user');
+    try {
+      await axios.post('http://172.16.10.151:8800/api/auth/logout');
+      redirect('/login'); 
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  
+
   useEffect(() => {
-    localStorage.setItem("user",JSON.stringify(currentUser))
-  },[currentUser])
+    localStorage.setItem("user", JSON.stringify(currentUser))
+  }, [currentUser])
 
   return (
-    <AuthContext.Provider value={{login,currentUser}}>
+    <AuthContext.Provider value={{ login, currentUser, logout }}>
       {children}
     </AuthContext.Provider>
   )

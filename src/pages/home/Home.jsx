@@ -2,11 +2,12 @@ import React,{useContext} from 'react'
 import {AuthContext} from '../../context/authContext';
 import DataTable from '../../components/dataTable/DataTable';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Tracking from '../tracking/Tracking';
 const Home = () => {
   const navigate = useNavigate();
   const { currentUser } = useContext(AuthContext);
+  const { logout  } = useContext(AuthContext);
   const columns = [
     {field:'order',headerName:"ลำดับ"},
     {field:'taskDetails',headerName:"รายละเอียด",flex:1},
@@ -15,7 +16,8 @@ const Home = () => {
     {field:'taskDate',headerName:"วันที่รับเคส"},
   ]
   let tasks = [
-    {
+      
+      {
         order: 1,
         taskDetails: " คอมพิวเตอร์เริ่มช้าลง",
         taskInformer: "นายสุริยา ช่างคอม",
@@ -78,9 +80,8 @@ const Home = () => {
 ];
    const handleLogout = async (e) => {
     e.preventDefault();
-    localStorage.clear("user");
     try {
-      await axios.post('http://172.16.10.151:8800/api/auth/logout');
+      logout();
       navigate("/login")
     } catch (error) {
       console.log(error)
@@ -91,6 +92,7 @@ const Home = () => {
       {currentUser && <h1>{currentUser.FirstName}</h1>}
       <h3>Homepage</h3>
       <button onClick={handleLogout}>Log out</button>
+      <Link to={`/tracking`} preventScrollReset target='_blank'>Tracking</Link>
     </div>
   )
 }
