@@ -137,7 +137,7 @@ const Task = () => {
           <div className="info">
             <div className="topInfo">
               <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" />
-              <h1># {formattedTrackID}</h1>
+              <h1 style={{color:'#023047'}}># {formattedTrackID}</h1>
             </div>
             <div className="details">
               <div className="item">
@@ -161,10 +161,10 @@ const Task = () => {
         </div>
         <div className="activities">
           <div>
-            <h2>รายละเอียดการดำเนินการ</h2>
-            <Button onClick={handleOpen} sx={{ borderRadius: 10 }} variant="contained" startIcon={<AddIcon />} color='warning'>
+            <h2 style={{color:"#023047",marginTop:'10px'}}>รายละเอียดการดำเนินการ</h2>
+            {/* <Button onClick={handleOpen} sx={{ borderRadius: 10 }} variant="contained" startIcon={<AddIcon />} color='warning'>
               Add
-            </Button>
+            </Button> */}
             <Modal aria-labelledby="transition-modal-title"
               aria-describedby="transition-modal-description"
               open={open}
@@ -189,7 +189,7 @@ const Task = () => {
           </div>
           <Progress
             StatusName='กำลังดำเนินการ'
-            StatusDescription='thisistestlikebest'
+            StatusDescription='ทดสอบการใช้งาน UAT '
             UpdateDate='3 hours ago'
           />
           {/* <Controls.Button

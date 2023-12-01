@@ -7,8 +7,8 @@ import { Button } from '@mui/material';
 const Tracking = () => {
   const [data,setData] = useState({});
   const {currentUser} = useContext(AuthContext);
-
-
+  const ROLES = {Admin:1,User:3}
+  const checkRole = currentUser?.Role === ROLES.Admin;
   const submitUser = {user:currentUser.UserID,role:currentUser.Role}
   const fetchTracking = async  () => {
      await axios.post('http://172.16.10.151:8800/api/task/tracking',submitUser,{withCredentials:true})
@@ -18,33 +18,24 @@ const Tracking = () => {
   }
   useEffect(()=>{
     fetchTracking()
-
   },[currentUser])
   
   const columns = [
-    { field: "TrackID", headerName: "ลำดับ",width:50},
-    { field: "CreateUserID", headerName: "รหัสผู้ใช้งาน",width:80},
-    { field: "InventoryID", headerName: "รหัสสินค้า",width:90},
-    { field: "TrackType", headerName: "ประเภทของรายการ",width:150 },
-    { field: "TrackTopic", headerName: "หัวข้อ", width:200},
-    { field: "TrackDescription", headerName: "	คำอธิบาย",width:200},
-    { field: "RecipientName", headerName: "ชื่อผู้รับ" },
-    { field: "RecipientTelephone", headerName: "หมายเลขโทรศัพท์", },
-    { field: "ActiveStatus", headerName: "	สถานะการเปิด/ปิด",width:20},
-    { field: "CreateDate", headerName: "วันที่แจ้ง", },
-    { field: "UpdateDate", headerName: "วันที่อัพเดต", },
-    { field: "RecipientUserID", headerName: "เจ้าหน้าที่ผู้รับรายการ",width:100},
+    { field: "TrackID", headerName: "ลำดับ",flex:0.1},
+    { field: "TrackTopic", headerName: "หัวข้อ", flex:0.5},
+    { field: "FirstName", headerName: "ชื่อผู้แจ้ง", flex:0.3},
+    { field: "RecipientName", headerName: "ชื่อผู้รับ",flex:0.3},
+    { field: "ActiveStatus", headerName: "	สถานะ",flex:0.1},
   ];
   return (
     <div className='products'>
       <div className="info">
-        <h1>Tracking</h1>
-        <Button variant='outlined'>Create Repair</Button>
+        <h1 style={{color:'darkblue'}}>ติดตามงาน 📌</h1>
       </div>
       <DataTable
        columns={columns}
        rows={data}
-       slug='tracking'
+       slug= {checkRole ? 'tracking' : 'userTracking'} 
       />
     </div>
   )

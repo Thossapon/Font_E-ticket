@@ -17,6 +17,7 @@
         display: flex;
         align-items: center;
         gap: 20px;
+        margin-top: 10px;
 
         img {
           width: 100px;
@@ -41,10 +42,11 @@
             font-weight: 600;
             margin-right: 10px;
             text-transform: capitalize;
+            color: #023047;
           }
           .itemValue {
             font-weight: lighter;
-            color: rgb(41, 209, 209) ;
+            color:#ffb703;
           }
         }
       }
@@ -84,7 +86,7 @@
         position: relative;
         width: 1.5px;
         padding-top: 50px;
-        background-color: #f45b69;
+        background-color: #fb8500;
 
         &::after {
           content: "";
@@ -94,7 +96,7 @@
           width: 10px;
           height: 10px;
           border-radius: 50%;
-          background-color: #f45b69;
+          background-color: #ffb703;
           transform: translateX(-50%);
         }
         // &:first-child::after {

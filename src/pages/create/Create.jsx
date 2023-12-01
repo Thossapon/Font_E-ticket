@@ -32,26 +32,32 @@ const Create = () => {
     }
     return (
         <div>
-            <h3>{currentUser.Username}</h3>
+            <h1 style={{color:'darkblue'}}>แจ้งซ่อม</h1>
             <Autocomplete
                 disablePortal
                 options={devices_type}
-                sx={{ width: 300 }}
+                sx={{ width: '100%',marginBottom:2,marginTop:'30px' }}
                 onChange={(event,newValue) => {
                     setValue(newValue)
                     setTaskData((prev) => ({...prev,TrackType:newValue}))
                 }}
-                renderInput={(params) => <TextField {...params} label="type" />}
+                renderInput={(params) => <TextField {...params} label="ประเภท" />}
             />
-            <TextField label='เลขพัสดุคุรุภัณฑ์' name='InventoryID' onChange={handleChange} />
+            <TextField label='เลขพัสดุคุรุภัณฑ์' name='InventoryID' onChange={handleChange} sx={{width:'100%',marginBottom:2}}/>
             {/* <TextField label='เลขสติกเกอร์'/> */}
-            <TextField label='เรื่อง' name='TrackTopic' onChange={handleChange} />
-            <TextField label='รายละเอียด' multiline name='TrackDescription' onChange={handleChange} />
+            <TextField label='เรื่อง' name='TrackTopic' onChange={handleChange} sx={{width:'100%',marginBottom:2}}/>
+            <TextField label='รายละเอียด' multiline name='TrackDescription' onChange={handleChange} sx={{width:'100%',marginBottom:2}}/>
+            <br />
             <Button
             onClick={handleClick}
-            variant='outlined'
+            variant='contained'
+            color='warning'
+            sx={{
+                width:'100%'
+            }}
+
             >
-                Downward Spiral
+                แจ้งซ่อม
             </Button>
             {/* <TextField label='ที่อยู่ - เบอร์โทร ติดต่อกลับ'multiline/> */}
         </div>

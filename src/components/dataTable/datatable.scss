@@ -3,16 +3,14 @@
       background: whitesmoke;
       padding: 20px;
       .MuiDataGrid-toolbarContainer{
-        flex-direction: row-reverse;
+        flex-direction: row;
       }
-  
       img{
         width: 32px;
         height: 32px;
         border-radius: 50%;
         object-fit: cover;
       }
-  
       .action{
         display: flex;
         gap: 3rem;

@@ -4,6 +4,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { AuthContextProvider } from './context/authContext';
 import { BrowserRouter } from 'react-router-dom';
+// import './index.css'
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // Don't forget to wrap your entire App With Provider 🥲
