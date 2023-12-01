@@ -4,6 +4,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import TableChartIcon from '@mui/icons-material/TableChart';
 import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch';
 import GroupIcon from '@mui/icons-material/Group';
+import BookIcon from '@mui/icons-material/Book';
 import './menu.scss'
 import { Link } from 'react-router-dom';
 
@@ -46,17 +47,25 @@ const Menu = () => {
             title: "การจัดการข้อมูลผู้ใช้งาน",
             url: '/manage',
             icon: <GroupIcon />
+        }, 
+        {
+            id: 6,
+            title: "คู่มือการใช้งาน",
+            url: '/manual',
+            icon: < BookIcon/>
         },
     ]
     return (
         <div className='menu'>
             {menus.map((item) => (
-                <div className='item' key={item.id}>
-                    <Link to={item.url} className='listItem'>
-                        {item.icon}
-                        <span className="listItemTitle">{item.title}</span>
-                    </Link>
-                </div>
+                (checkRole ? item.id !== 6  :  item.id !== 4 && item.id !== 5 ) && (
+                    <div className='item' key={item.id}>
+                        <Link to={item.url} className='listItem'>
+                            {item.icon}
+                            <span className="listItemTitle">{item.title}</span>
+                        </Link>
+                    </div>
+                )
             ))}
         </div>
     )

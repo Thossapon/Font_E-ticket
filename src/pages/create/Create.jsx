@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react'
 import { Autocomplete, TextField, Select, MenuItem, Button } from '@mui/material'
 import { AuthContext } from '../../context/authContext'
 import axios from 'axios';
+import {Grid} from '@mui/material'
 import { useNavigate } from 'react-router-dom';
 const Create = () => {
     const navigate = useNavigate();
@@ -44,6 +45,7 @@ const Create = () => {
                 renderInput={(params) => <TextField {...params} label="ประเภท" />}
             />
             <TextField label='เลขพัสดุคุรุภัณฑ์' name='InventoryID' onChange={handleChange} sx={{width:'100%',marginBottom:2}}/>
+            <TextField label='เลขสติกเกอร์' name='StickerID' onChange={handleChange} sx={{width:'100%',marginBottom:2}}/>
             {/* <TextField label='เลขสติกเกอร์'/> */}
             <TextField label='เรื่อง' name='TrackTopic' onChange={handleChange} sx={{width:'100%',marginBottom:2}}/>
             <TextField label='รายละเอียด' multiline name='TrackDescription' onChange={handleChange} sx={{width:'100%',marginBottom:2}}/>

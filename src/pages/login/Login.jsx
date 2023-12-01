@@ -18,8 +18,11 @@ import MuiAlert from '@mui/material/Alert';
 
 import Register from '../register/Register';
 import axios from 'axios';
+
+
 import { ThemeProvider, createTheme } from '@mui/system';
 const Login = () => {
+    const {currentUser} = useContext(AuthContext);
     const Alert = React.forwardRef(function Alert(props, ref) {
         return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
     });
@@ -48,9 +51,9 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log(currentUser);
         try {
             await login(inputs);
-            setOpen(true);
             navigate('/') 
         } catch (err) {
             console.log(err.response.data);

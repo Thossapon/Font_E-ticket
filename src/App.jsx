@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider, Outlet, Navigate } from "react-router-dom";
-import { useContext, useEffect,useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Login from "./pages/login/Login";
 import { AuthContext } from "./context/authContext";
@@ -19,6 +19,7 @@ import Forget from "./pages/forget/Forget";
 import Report from "./pages/report/Report";
 import Manage from "./pages/manage/Manage";
 import Test from "./components/dataTable/Test";
+import Manual from "./pages/manual/Manual";
 
 const ROLES = {
   'Admin': 1,
@@ -29,14 +30,14 @@ function App() {
 
   const { currentUser } = useContext(AuthContext);
   const queryClient = new QueryClient()
-  const [allow,setAllow] = useState(false);
+  const [allow, setAllow] = useState(false);
   const checkRole = currentUser?.Role === ROLES.Admin;
 
   const Layout = () => {
     return (
       <div class="main">
         <div className="custom-navbar">
-          <Navbar/>
+          <Navbar />
         </div>
         <div className="container">
           <div className="menuContainer">
@@ -48,17 +49,11 @@ function App() {
             </QueryClientProvider>
           </div>
         </div>
-        <Footer/>
+        <Footer />
       </div>
     )
   }
-  function bald() {
-    return (
-      <div>
-        auth
-      </div>
-    )
-  }
+
   // add role based for login
   const ProtectedRoute = ({ children }) => {
     if (!currentUser) {
@@ -75,13 +70,15 @@ function App() {
       path: '/',
       element: (
         <ProtectedRoute>
-          <Layout/>
+          <Layout />
         </ProtectedRoute>
       ),
       children: [
         {
           path: '/',
-          element: <Home />
+          element: (
+              <Home/>
+          )
         },
         {
           path: '/testpath',
@@ -102,20 +99,38 @@ function App() {
         },
         {
           path: '/create',
-          element: <Create/>
+          element: <Create />
         },
         {
           path: '/pending',
-          element: <PendingTask/>
+          element: (
+            <ProtectedRoute>
+              {<RequireAuth allowRoles={[ROLES.Admin]} />}
+              <PendingTask />
+            </ProtectedRoute>
+          )
         }
         ,
         {
-          path:'/report',
-          element:<Report/>
+          path: '/report',
+          element: (
+            <ProtectedRoute>
+              {<RequireAuth allowRoles={[ROLES.Admin]} />}
+              <Report />
+            </ProtectedRoute>
+          )
         },
         {
-          path:'/manage',
-          element:<Manage/>
+          path: '/manage',
+          element: (
+            <ProtectedRoute>
+              {<RequireAuth allowRoles={[ROLES.Admin]} />}
+              <Manage />
+            </ProtectedRoute>
+          )
+        },{
+          path:'/manual',
+          elementW:<Manual/>
         }
 
       ]

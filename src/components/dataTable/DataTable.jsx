@@ -97,8 +97,9 @@ const DataTable = (props) => {
            color: '#2e7c67',
          },
          "& .MuiDataGrid-columnHeaders": {
-           backgroundColor: "#a4a9fc",
+           backgroundColor: "darkblue",
            borderBottom: "none",
+           color:'whitesmoke'
          },
         
          

@@ -1,6 +1,17 @@
 import React, { useContext } from 'react'
 import './home.scss'
+import { Button } from '@mui/material'
+import { AuthContext } from '../../context/authContext'
+import { redirect, useNavigate } from 'react-router-dom'
+
 const Home = () => {
+  const navigate = useNavigate('/login')
+  const {logout} = useContext(AuthContext)
+  const handleLogout = () => {
+    logout();
+    redirect('/login')
+  }
+  
   return (
     <div className="home">
       <div className="box box1">
@@ -16,6 +27,8 @@ const Home = () => {
         UPS
       </div>
       <div className="box box9">Box 9</div>
+    
+
     </div>
   )
 }

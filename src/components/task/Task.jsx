@@ -11,10 +11,7 @@ import "react-quill/dist/quill.snow.css";
 import { Box, Button, Fade, LinearProgress, Modal } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { Typography } from '@mui/material';
-import Controls from '../controls/Controls';
-import Popup from '../popup/Popup';
 import Progress from '../progress/Progress';
-import TaskForm from '../taskForm/TaskForm'
 const Task = () => {
   const state = useLocation().state;
   const [task, setTask] = useState(state ? state : {});
@@ -202,13 +199,6 @@ const Task = () => {
             Add New
           </Button>
         </div>
-        <Popup
-          title="Add Task Form"
-          openPopup={openPopup}
-          setOpenPopup={setOpenPopup}
-        >
-          <TaskForm />
-        </Popup>
       </div>
 
     </>

@@ -10,7 +10,6 @@ export const AuthContextProvider = ({ children }) => {
 
   const login = async (inputs) => {
     try {
-      setLoggedIn(true);
       const res = await axios.post("http://172.16.10.151:8800/api/auth/login", inputs, { withCredentials: true })
       setCurrentUser(res.data);
       localStorage.setItem('isLoggedIn', true);
@@ -20,13 +19,13 @@ export const AuthContextProvider = ({ children }) => {
   }
   const logout = async () => {
     setLoggedIn(false);
-    localStorage.clear('isLoggedIn', 'user');
+    localStorage.removeItem('user');
+    setCurrentUser(null)
     try {
       await axios.post('http://172.16.10.151:8800/api/auth/logout');
       redirect('/login');
     } catch (error) {
       console.log(error.response.data)
-
     }
   }
 

@@ -58,7 +58,7 @@ const Navbar = () => {
             src="./doom.jpeg"
             alt=""
           />
-          <span>{currentUser.Username}</span>
+          <span>{currentUser.FirstName}</span>
           {open && (
                 <div className="options">
                   <Link className="link" to="/orders">

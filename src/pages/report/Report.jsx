@@ -83,7 +83,7 @@ const Report = () => {
                     <Grid item sx={{ display: "flex", gap: "16px" }}>
                         <DatePicker label='วันที่เริ่มต้น'  />
                         <DatePicker label='วันที่เริ่มต้น' />
-                        <Button variant='contained' sx={{ marginTop: 0.5 }} fullWidth size='large'>ค้นหา</Button>
+                        <Button variant='outlined' sx={{ marginTop: 0.5 }} fullWidth size='large'>ค้นหา</Button>
                     </Grid>
                 </Grid>
                 <div className="info">
