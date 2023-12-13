@@ -20,6 +20,9 @@ import Report from "./pages/report/Report";
 import Manage from "./pages/manage/Manage";
 import Test from "./components/dataTable/Test";
 import Manual from "./pages/manual/Manual";
+import User from "./components/user/User";
+import UsersList from "./features/users/UserList";
+import FakeLogin from "./features/auth/FakeLogin";
 
 const ROLES = {
   'Admin': 1,
@@ -128,12 +131,25 @@ function App() {
               <Manage />
             </ProtectedRoute>
           )
-        },{
+        },
+        {
+          path:'/manage/:id',
+          element:<User/>
+        },
+        {
           path:'/manual',
           elementW:<Manual/>
         }
 
       ]
+    },
+    {
+      path:'/user',
+      element:<UsersList/>
+    },
+    {
+      path:'/fakelogin',
+      element:<FakeLogin/>
     },
     {
       path: '/login',

@@ -7,11 +7,13 @@ export const AuthContextProvider = ({ children }) => {
 
   const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem("user") || null));
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const [suckUser,setSuckUser] = useState({});
 
   const login = async (inputs) => {
     try {
       const res = await axios.post("http://172.16.10.151:8800/api/auth/login", inputs, { withCredentials: true })
       setCurrentUser(res.data);
+      setSuckUser(res.data);
       localStorage.setItem('isLoggedIn', true);
     } catch (error) {
       console.log(error);
@@ -34,7 +36,7 @@ export const AuthContextProvider = ({ children }) => {
   }, [currentUser])
 
   return (
-    <AuthContext.Provider value={{ login, currentUser, logout }}>
+    <AuthContext.Provider value={{ login, currentUser, logout ,suckUser}}>
       {children}
     </AuthContext.Provider>
   )

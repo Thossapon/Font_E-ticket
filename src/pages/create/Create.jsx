@@ -6,13 +6,16 @@ import {Grid} from '@mui/material'
 import { useNavigate } from 'react-router-dom';
 const Create = () => {
     const navigate = useNavigate();
+    
+    // รับค่า CurrentUser
     const { currentUser } = useContext(AuthContext);
+
+    
     let devices_type = ["คอมพิวเตอร์", "โน๊ตบุ๊ค", "เครื่องพิมพ์", "สแกนเนอร์", "เซิร์ฟเวอร์", "โทรศัพท์ IP", "อินเทอร์เน็ต"]
     const [taskData, setTaskData] = useState({
         CreateUserID: currentUser.UserID,
-        InventoryID: '',
-        // StickerID:'',
-        TrackType: '',
+        InventoryTypeID: '',
+        InventoryTypeName: '',
         TrackTopic: '',
         TrackDescription: '',
     })
@@ -40,13 +43,11 @@ const Create = () => {
                 sx={{ width: '100%',marginBottom:2,marginTop:'30px' }}
                 onChange={(event,newValue) => {
                     setValue(newValue)
-                    setTaskData((prev) => ({...prev,TrackType:newValue}))
+                    setTaskData((prev) => ({...prev,InventoryTypeName:newValue}))
                 }}
                 renderInput={(params) => <TextField {...params} label="ประเภท" />}
             />
-            <TextField label='เลขพัสดุคุรุภัณฑ์' name='InventoryID' onChange={handleChange} sx={{width:'100%',marginBottom:2}}/>
-            <TextField label='เลขสติกเกอร์' name='StickerID' onChange={handleChange} sx={{width:'100%',marginBottom:2}}/>
-            {/* <TextField label='เลขสติกเกอร์'/> */}
+            <TextField label='เลขพัสดุคุรุภัณฑ์' name='InventoryTypeID' onChange={handleChange} sx={{width:'100%',marginBottom:2}}/>
             <TextField label='เรื่อง' name='TrackTopic' onChange={handleChange} sx={{width:'100%',marginBottom:2}}/>
             <TextField label='รายละเอียด' multiline name='TrackDescription' onChange={handleChange} sx={{width:'100%',marginBottom:2}}/>
             <br />

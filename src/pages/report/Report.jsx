@@ -19,6 +19,7 @@ const Report = () => {
 
     const [data, setData] = useState({});
     const { currentUser } = useContext(AuthContext);
+    const { suckUser } = useContext(AuthContext);
     const checkRole = currentUser?.Role === ROLES.Admin;
     const fetchPending = async () => {
         await axios.get('http://172.16.10.151:8800/api/task/pending', { withCredentials: true })

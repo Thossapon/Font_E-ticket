@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
+import { AuthContext } from '../../context/authContext';
 const RequireAuth = ({ allowRoles }) => {
+  const ADMIN = process.env.REACT_APP_ADMIN_ROLE;
+  const {suckUser} = useContext(AuthContext);
   const { currentUser } = useAuth()
   const location = useLocation();
   const [something, setSomething] = useState(false);

@@ -12,7 +12,6 @@ const Navbar = () => {
     const handleClickOutside = (e) => {
       if (!menuRef.current.contains(e.target)) {
         setOpen(false);
-        console.log(menuRef.current);
       }
     };
   
@@ -20,7 +19,6 @@ const Navbar = () => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
         setOpen(false);
-        console.log(menuRef.current);
       }
     };
   
@@ -55,7 +53,7 @@ const Navbar = () => {
       <div className="icons">
         <div className="user" onClick={()=>setOpen(!open)}>
           <img
-            src="./doom.jpeg"
+            src="./user.svg"
             alt=""
           />
           <span>{currentUser.FirstName}</span>
