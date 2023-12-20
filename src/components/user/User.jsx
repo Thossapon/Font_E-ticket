@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect ,useContext} from 'react'
 import { useLocation } from 'react-router-dom'
 import moment from 'moment'
 import 'moment-timezone'
 import 'moment/locale/th'
-import useAuth from '../../hooks/useAuth';
 import { Grid, TextField } from '@mui/material'
-
+import { AuthContext } from '../../context/authContext'
 const User = () => {
-    const { currentUser } = useAuth();
+    const {currentUser} = useContext(AuthContext);
     const state = useLocation().state;
     const [user, setUser] = useState(state ? state : {});
     const [update,setUpdate] = useState();

@@ -30,6 +30,9 @@ export const AuthContextProvider = ({ children }) => {
       console.log(error.response.data)
     }
   }
+  const fakeLogout = async () => {
+    
+  }
 
   useEffect(() => {
     localStorage.setItem("user", JSON.stringify(currentUser))

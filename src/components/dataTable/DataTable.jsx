@@ -6,28 +6,16 @@ import { Box, Button } from '@mui/material';
 import axios from 'axios';
 import './datatable.scss'
 import { AuthContext } from '../../context/authContext';
-import { faGlasses } from '@fortawesome/free-solid-svg-icons';
+import useAuth from '../../hooks/useAuth';
+
 const DataTable = (props) => {
+  const {Username,Role,UserID} = useAuth
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
-  const submitUser = { user: currentUser.UserID, userName: currentUser.Username, role: currentUser.Role }
-
+  // const submitUser = { user: currentUser.UserID, userName: currentUser.Username, role: currentUser.Role }
+  const submitUser = { user: UserID, userName: Username, role: Role }
   // for sent trackID 
 
-
-  const makeApiRequest = (data) => {
-    // Make an API request with the selected data
-    // For example, if your API endpoint is http://localhost:8800/api, you can use Axios like this:
-    axios.post(`http://172.16.10.151:8800/api/task/${props.slugdata}`)
-      .then((response) => {
-        // Handle the API response
-        console.log('API Response:', response.data);
-      })
-      .catch((error) => {
-        // Handle errors
-        console.error('API Error:', error);
-      });
-  };
   const handleAccept = async (params) => {
     try {
       console.log(params);
@@ -64,6 +52,7 @@ const DataTable = (props) => {
           {props.slug === 'tracking' ?
             (
               <div style={{ display: 'flex', gap: '10px' }}>
+                
                 {/* กำหนดค่า state เท่ากับ current row */}
                 <Link to={`/tracking/${params.row.TrackID}`} state={params.row}>
                   <Button variant='contained' color='primary'>

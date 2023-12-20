@@ -1,22 +1,19 @@
 import React, { useContext } from 'react'
+// icons
 import HandymanIcon from '@mui/icons-material/Handyman';
-import AssignmentIcon from '@mui/icons-material/Assignment';
 import TableChartIcon from '@mui/icons-material/TableChart';
 import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch';
 import GroupIcon from '@mui/icons-material/Group';
 import BookIcon from '@mui/icons-material/Book';
 import './menu.scss'
 import { Link } from 'react-router-dom';
-
-import { AuthContext } from '../../context/authContext';
+import useAuth from '../../hooks/useAuth';
+import {ROLES} from '../../config/roles'
 const Menu = () => {
-
-    const ROLES = {
-        Admin: 1,
-        User: 3
-    }
-    const { currentUser } = useContext(AuthContext);
-    const checkRole = currentUser?.Role === ROLES.Admin;
+    
+    const { UserID, Role, isAdmin, isStaff } = useAuth();
+    
+    const checkRole = Role === ROLES.Admin ||  Role === ROLES.Staff;
     const menus = [
         {
             id: 1,
@@ -47,18 +44,18 @@ const Menu = () => {
             title: "การจัดการข้อมูลผู้ใช้งาน",
             url: '/manage',
             icon: <GroupIcon />
-        }, 
+        },
         {
             id: 6,
             title: "คู่มือการใช้งาน",
             url: '/manual',
-            icon: < BookIcon/>
+            icon: < BookIcon />
         },
     ]
     return (
         <div className='menu'>
             {menus.map((item) => (
-                (checkRole ? item.id !== 6  :  item.id !== 4 && item.id !== 5 ) && (
+                (isAdmin ? item.id !== 6 : isStaff ? item.id !== 5 : item.id !== 4 && item.id !== 5 ) && (
                     <div className='item' key={item.id}>
                         <Link to={item.url} className='listItem'>
                             {item.icon}

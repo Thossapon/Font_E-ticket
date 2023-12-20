@@ -7,7 +7,6 @@ import { selectUserById } from './usersApiSlice'
 
 const User = ({ userId }) => {
     const user = useSelector(state => selectUserById(state, userId))
-    console.log(user);
     const navigate = useNavigate()
 
     if (user) {

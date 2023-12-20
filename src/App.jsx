@@ -1,7 +1,6 @@
 import { createBrowserRouter, RouterProvider, Outlet, Navigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import Login from "./pages/login/Login";
 import { AuthContext } from "./context/authContext";
 import Navbar from './components/navbar/Navbar'
 import Home from './pages/home/Home'
@@ -15,27 +14,18 @@ import Register from "./pages/register/Register";
 import "./styles/global.scss";
 import Menu from "./components/menu/Menu";
 import PendingTask from "./pages/pending/PendingTask";
-import Forget from "./pages/forget/Forget";
 import Report from "./pages/report/Report";
 import Manage from "./pages/manage/Manage";
-import Test from "./components/dataTable/Test";
 import Manual from "./pages/manual/Manual";
 import User from "./components/user/User";
-import UsersList from "./features/users/UserList";
-import FakeLogin from "./features/auth/FakeLogin";
-
-const ROLES = {
-  'Admin': 1,
-  'User': 3
-}
+import Login from "./features/auth/Login";
+import PersistLogin from "./features/auth/PersistLogin";
+import useAuth from "./hooks/useAuth";
+import { ROLES } from './config/roles'
+import TicketList from "./features/ticket/TicketList";
 
 function App() {
-
-  const { currentUser } = useContext(AuthContext);
   const queryClient = new QueryClient()
-  const [allow, setAllow] = useState(false);
-  const checkRole = currentUser?.Role === ROLES.Admin;
-
   const Layout = () => {
     return (
       <div class="main">
@@ -56,105 +46,115 @@ function App() {
       </div>
     )
   }
+  //? Public Page
+  //# Protected Page
 
   // add role based for login
-  const ProtectedRoute = ({ children }) => {
-    if (!currentUser) {
-      return <Navigate to="/login" />;
-    }
-    return children;
-  };
   const router = createBrowserRouter([
+
+    //?Public (`Register Page`)
     {
       path: '/register',
       element: <Register />
     },
-    {
-      path: '/',
-      element: (
-        <ProtectedRoute>
-          <Layout />
-        </ProtectedRoute>
-      ),
-      children: [
-        {
-          path: '/',
-          element: (
-              <Home/>
-          )
-        },
-        {
-          path: '/testpath',
-          element: (
-            <ProtectedRoute>
-              {<RequireAuth allowRoles={[ROLES.Admin]} />}
-              <Tracking />
-            </ProtectedRoute>
-          )
-        },
-        {
-          path: '/tracking',
-          element: (<Tracking />)
-        },
-        {
-          path: '/tracking/:id',
-          element: <Task />
-        },
-        {
-          path: '/create',
-          element: <Create />
-        },
-        {
-          path: '/pending',
-          element: (
-            <ProtectedRoute>
-              {<RequireAuth allowRoles={[ROLES.Admin]} />}
-              <PendingTask />
-            </ProtectedRoute>
-          )
-        }
-        ,
-        {
-          path: '/report',
-          element: (
-            <ProtectedRoute>
-              {<RequireAuth allowRoles={[ROLES.Admin]} />}
-              <Report />
-            </ProtectedRoute>
-          )
-        },
-        {
-          path: '/manage',
-          element: (
-            <ProtectedRoute>
-              {<RequireAuth allowRoles={[ROLES.Admin]} />}
-              <Manage />
-            </ProtectedRoute>
-          )
-        },
-        {
-          path:'/manage/:id',
-          element:<User/>
-        },
-        {
-          path:'/manual',
-          elementW:<Manual/>
-        }
-
-      ]
-    },
-    {
-      path:'/user',
-      element:<UsersList/>
-    },
-    {
-      path:'/fakelogin',
-      element:<FakeLogin/>
-    },
+    //?Public (`Register Page`)
     {
       path: '/login',
       element: <Login />
     },
+    {
+      //#all (`Persist Data to prevent refresh`)
+      path: '/',
+      element: (
+        <PersistLogin />
+      ),
+      //#all (`children path & element`)
+      children: [
+        {
+          //#all (`Main Layout`)
+          path: '/',
+          element: <Layout />,
+          children: [
+            {
+              //#all (`Homepage`)
+              path: '/',
+              element: (
+                <Home />
+              )
+            },
+            //#all (`Create Ticket`)
+            {
+              path: '/create',
+              element: <Create />
+            },
+            //#all (`Track all ticket`)
+            {
+              path: '/tracking',
+              element: (<TicketList />)
+            },
+            //#all (`view each ticket`)
+            {
+              path: '/tracking/:id',
+              element: <Task />
+            },
+            //#admin,staff (`all pending ticket`)
+            {
+              path: '/pending',
+              element: (
+                <div>
+                  <RequireAuth allowRoles={[ROLES.Admin, ROLES.Staff]} />
+                  <PendingTask />
+                </div>
+
+              )
+            }
+            ,
+            {
+              //#admin (`for report`)
+              path: '/report',
+              element: (
+                <div>
+                  <RequireAuth RequireAuth allowRoles={[ROLES.Admin]} />
+                  <Report />
+                </div>
+              )
+            },
+            {
+              //#admin (`For User Management`)
+              path: '/manage',
+              element: (
+                <div>
+                  <RequireAuth allowRoles={[ROLES.Admin]} />
+                  <Manage />
+                </div>
+              )
+            },
+            {
+              path: '/manage/:id',
+              element: <User />
+            },
+            //#all (`User Manual`)
+
+            {
+              path: '/manual',
+              element: <Manual />
+            }
+
+          ]
+        },
+      ]
+    },
+    // {
+    //   path: '/',
+    //   element:<PersistLogin/>,
+    //   children: [
+    //     {
+    //       path: '/reduxuser',
+    //       element: <UsersList />
+    //     },
+    //   ]
+    // },
+
   ])
   return <RouterProvider router={router} />
 }

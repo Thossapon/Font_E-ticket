@@ -1,17 +1,17 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState,useContext } from 'react'
 import { useLocation } from 'react-router-dom';
 import moment from 'moment'
 import 'moment-timezone'
 import 'moment/locale/th'
 import ReactQuill from "react-quill";
-import useAuth from '../../hooks/useAuth';
 import './task.scss';
 import "react-quill/dist/quill.snow.css";
 import { Box, Button, Fade, LinearProgress, Modal } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { Typography } from '@mui/material';
 import Progress from '../progress/Progress';
+import { AuthContext } from '../../context/authContext';
 const Task = () => {
 
   //# รับค่ามาจาก state มาจาก ROW ของ Datagrid โดยใช้ useLocation (react-router-dom)
@@ -28,7 +28,7 @@ const Task = () => {
     }
   ]);
 
-  const { currentUser } = useAuth();
+  const {currentUser} = useContext(AuthContext) 
 
   //useless
   const [editTask, setEditTask] = useState({
@@ -88,13 +88,14 @@ const Task = () => {
           .then(console.log(status))
     }
     //  fetchTracking();
-    fetchStatus();
+    // fetchStatus();
   }, [])
 
   const handleChange = (e) => {
     console.log(e.target.value);
     setEditTask((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
+  const progress = task
   return (
       <div className="single">
         <div className="view">
@@ -115,7 +116,7 @@ const Task = () => {
                 <span className="itemTitle">วันที่อัพเดตเคส</span>
                 <span className="itemValue">{formattedDate}</span>
                 <span className="itemTitle">เจ้าของเรื่อง</span>
-                <span className="itemValue">{task.CreateUserID}</span>
+                <span className="itemValue">{task.CreateName}</span>
                 <span className="itemTitle">ผู้รับเคส</span>
                 <span className="itemValue">{task.RecipientName ? task.RecipientName : 'ยังไม่มีคนรับเคส'}</span>
               </div>
@@ -128,7 +129,7 @@ const Task = () => {
           <h2 style={{ color: "#023047", marginTop: '10px' }}>รายละเอียดการดำเนินการ</h2>
           <Progress 
             // ส่ง status ของ task ที่เลือก {   }
-            data={status}
+            data={progress}
             // ส่งวันที่รับเคสไปในกรณีที่ยังไม่มีการอัพเดตสถานะ
             UpdateDate={task.CreateDate}
             // สำหรับเช็คโรล

@@ -16,7 +16,6 @@ export const usersApiSlice = apiSlice.injectEndpoints({
                 // console.log(`this is response : ${result}`)
                 return response.status === 200 && !result.error
             },
-            keepUnusedDataFor:1000,
             transformResponse:responseData => {
                 // console.log(responseData);
                 const loadUsers = responseData.map(user => {
@@ -26,7 +25,6 @@ export const usersApiSlice = apiSlice.injectEndpoints({
                 return usersAdapter.setAll(initialState,loadUsers)
             },
             providesTags: (result, error, arg) => {
-                console.log(result);
                 if (result?.UserID) {
                     return [
                         { type: 'User', id: 'LIST' },

@@ -3,21 +3,27 @@ import DataTable from '../../components/dataTable/DataTable'
 import { AuthContext } from '../../context/authContext';
 import axios from 'axios';
 import './tracking.scss'
+import useAuth from '../../hooks/useAuth';
+
 const Tracking = () => {
+
+  const { UserID,Role } = useAuth();
+  console.log(UserID,Role);
   const [data,setData] = useState({});
-  const {currentUser} = useContext(AuthContext);
+
   const ROLES = {Admin:1,User:3}
-  const checkRole = currentUser?.Role === ROLES.Admin;
-  const submitUser = {user:currentUser.UserID,role:currentUser.Role}
+  const checkRole = Role === ROLES.Admin;
+  
+  const fakeUser = {user:UserID,role: Role}
   const fetchTracking = async  () => {
-     await axios.post('http://172.16.10.151:8800/api/task/tracking',submitUser,{withCredentials:true})
+     await axios.post('http://172.16.10.151:8800/api/task/tracking',fakeUser,{withCredentials:true})
       .then((res) =>setData(res.data))
         .then(console.log(data))
         .catch((err) => console.log(err))
   }
   useEffect(()=>{
     fetchTracking()
-  },[currentUser])
+  },[UserID])
   
   const columns = [
     { field: "TrackID", headerName: "ลำดับ",flex:0.1},

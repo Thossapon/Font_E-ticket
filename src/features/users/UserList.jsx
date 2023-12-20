@@ -1,7 +1,10 @@
 import { useGetUsersQuery } from "./usersApiSlice"
 import User from './User'
+import useAuth from "../../hooks/useAuth"
 const UsersList = () => {
 
+
+    const {Username,status} = useAuth();
 
     const {
         data: users,
@@ -11,8 +14,8 @@ const UsersList = () => {
         error
     } = useGetUsersQuery()
 
-    let content
-
+    let content;
+    let user;
     if (isLoading) content = <p>Loading...</p>
 
     if (isError) {
@@ -40,6 +43,12 @@ const UsersList = () => {
             </table>
         )
     }
+    user = (
+        <div>
+            <h1>{Username}</h1>
+            <h1>{status}</h1>
+        </div>
+    )
 
     return content
 }
