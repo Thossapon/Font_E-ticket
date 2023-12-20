@@ -36,7 +36,6 @@ const TicketList = () => {
     id: ticket.TrackID,
     ...ticket,
   }));
-  console.log(rows);
 
   return (
     <div className='products'>
