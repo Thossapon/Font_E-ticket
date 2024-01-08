@@ -8,37 +8,41 @@ import { Box } from '@mui/system';
 import moment from 'moment';
 import './pendingtask.scss'
 import Create from '../create/Create';
-import { useGetPendingQuery } from '../../features/ticket/ticketApiSlice';
+import { useGetPendingQuery, useAcceptTicketMutation } from '../../features/ticket/ticketApiSlice';
 import { selectCurrentToken } from '../../features/auth/authSlice';
 import { useSelector } from 'react-redux';
 const PendingTask = () => {
 
     const token = useSelector(selectCurrentToken);
-    const ROLES = { Admin: 1, User: 3 }
     const {
         data: tickets,
         isLoading,
         isSuccess,
         isError,
         error
-    } = useGetPendingQuery({ token })
-    
+    } = useGetPendingQuery({ token }, {
+        pollingInterval: 15000,
+        refetchOnFocus: true,
+        refetchOnMountOrArgChange: true
+    })
+
+
+
     const [value, setValue] = useState('1');
     const handleChange = (event, newValue) => {
         setValue(newValue);
     }
-    const [data, setData] = useState({});
-    const { currentUser } = useContext(AuthContext);
-    const checkRole = currentUser?.Role === ROLES.Admin;
+    useEffect(() => {
+    }, [])
 
     const options = tickets ? tickets : []
 
     const columns = [
-        { field: "TrackID", headerName: "ลำดับ", flex: 0.5 },
-        { field: "TrackTopic", headerName: "หัวข้อ", flex: 1 },
-        { field: "CreateName", headerName: "ชื่อผู้แจ้ง", flex: 1 },
-        { field: "RecipientName", headerName: "ชื่อผู้รับ", flex: 1 },
-        { field: "StatusName", headerName: "	สถานะ", flex: 1 },
+        { field: "TrackID", headerName: "ลำดับ", flex: 0.1 },
+        { field: "TrackTopic", headerName: "หัวข้อ", flex: 0.5 },
+        { field: "CreateName", headerName: "ชื่อผู้แจ้ง", flex: 0.3 },
+        { field: "CreateDate", headerName: "วันที่สร้าง", flex: 0.3 },
+        { field: "StatusName", headerName: "สถานะ", flex: 0.3 },
     ];
 
     return (
@@ -47,13 +51,12 @@ const PendingTask = () => {
                 <Box>
                     <TabList
                         onChange={handleChange}
-                        textColor="primary"
-                        indicatorColor="primary"
-                        aria-label="some might say"
+                        textColor="secondary"
+                        indicatorColor="secondary"
+                        aria-label="Ticket List"
                     >
                         <Tab value='1' label='งานรอรับ' />
                         <Tab value='2' label='เพิ่มข้อมูลแจ้งซ่อม' />
-
                     </TabList>
                 </Box>
                 <TabPanel value='1'>

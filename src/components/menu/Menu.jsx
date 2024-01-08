@@ -55,7 +55,7 @@ const Menu = () => {
     return (
         <div className='menu'>
             {menus.map((item) => (
-                (isAdmin ? item.id !== 6 : isStaff ? item.id !== 5 : item.id !== 4 && item.id !== 5 ) && (
+                (isAdmin ? item.id !== 6 : isStaff ? item.id !== 5 && item.id !== 6 : item.id !== 4 && item.id !== 5 ) && (
                     <div className='item' key={item.id}>
                         <Link to={item.url} className='listItem'>
                             {item.icon}

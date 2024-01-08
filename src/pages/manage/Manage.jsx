@@ -1,39 +1,48 @@
-import React,{useState,useEffect,useContext} from 'react'
-import axios from 'axios'
-import Header from '../../components/header/Header'
-import UsersList from '../../features/users/UserList'
+import React, { useState, useEffect, useContext } from 'react'
 import DataTable from '../../components/dataTable/DataTable'
-import { AuthContext } from '../../context/authContext'
-const Manage = () => {
-  const columns = [
-    { field: "UserID", headerName: "ลำดับ",flex:0.1},
-    { field: "FirstName", headerName: "ชื่อ", flex:0.5},
-    { field: "LastName", headerName: "นามสกุล", flex:0.3},
-    { field: "Telephone", headerName: "เบอร์โทรศัพท์",flex:0.3},
-    { field: "Role", headerName: "สิทธิ์",flex:0.1},
-  ]
-  
-  const {currentUser} = useContext(AuthContext)
-  const [data,setData] = useState({})
+import { useGetUsersQuery } from '../../features/users/usersApiSlice'
+import { Box } from '@mui/system';
+import SpeedDial from '@mui/material/SpeedDial';
+import SpeedDialIcon from '@mui/material/SpeedDialIcon';
+import SpeedDialAction from '@mui/material/SpeedDialAction';
+import FileCopyIcon from '@mui/icons-material/FileCopyOutlined';
+import SaveIcon from '@mui/icons-material/Save';
+import PrintIcon from '@mui/icons-material/Print';
+import ShareIcon from '@mui/icons-material/Share';
 
-  const fetchTracking = async  () => {
-    await axios.get('http://172.16.10.151:8800/api/users',{withCredentials:true})
-     .then((res) =>setData(res.data))
-       .then(console.log(data))
-       .catch((err) => console.log(err))
- }
- useEffect(()=>{
-   fetchTracking()
- },[currentUser])
+const Manage = () => {
+
+  const columns = [
+    { field: "UserID", headerName: "ลำดับ", flex: 0.2 },
+    { field: "FirstName", headerName: "ชื่อ", flex: 0.5 },
+    { field: "LastName", headerName: "นามสกุล", flex: 0.3 },
+    { field: "Telephone", headerName: "เบอร์โทรศัพท์", flex: 0.3 },
+    { field: "Role", headerName: "สิทธิ์", flex: 0.1 },
+  ]
+  const {
+    data: users,
+    isLoading,
+    isSuccess,
+    isError,
+    error
+    , } = useGetUsersQuery({
+      pollingInterval: 15000,
+      refetchOnFocus: true,
+      refetchOnMountOrArgChange: true
+    })
+  const { ids, entities } = users || { ids: [], entities: {} };
+  const rows = Object.values(entities).map((user) => ({
+    id: user.UserID,
+    ...user,
+  }));
   return (
     <div>
       <h1 style={{ color: 'darkblue' }}>จัดการผู้ใช้งาน</h1>
       <DataTable
-      columns={columns}
-      rows={data}
-      slug='manage'
+        columns={columns}
+        rows={rows}
+        slug='manage'
       />
-      <UsersList/>
     </div>
   )
 }

@@ -4,25 +4,25 @@ import {
 } from "@reduxjs/toolkit";
 import { apiSlice } from "../../app/api/apiSlice"
 const usersAdapter = createEntityAdapter({
-    selectId:user=>user.UserID
+    selectId: user => user.UserID
 });
 
 const initialState = usersAdapter.getInitialState();
 export const usersApiSlice = apiSlice.injectEndpoints({
-    endpoints:builder => ({
-        getUsers:builder.query({
-            query:() =>  '/users',
-            validateStatus:(response,result) => {
+    endpoints: builder => ({
+        getUsers: builder.query({
+            query: () => '/users/readall',
+            validateStatus: (response, result) => {
                 // console.log(`this is response : ${result}`)
                 return response.status === 200 && !result.error
             },
-            transformResponse:responseData => {
+            transformResponse: responseData => {
                 // console.log(responseData);
                 const loadUsers = responseData.map(user => {
                     // console.log(user);
                     return user;
                 })
-                return usersAdapter.setAll(initialState,loadUsers)
+                return usersAdapter.setAll(initialState, loadUsers)
             },
             providesTags: (result, error, arg) => {
                 if (result?.UserID) {
@@ -32,20 +32,44 @@ export const usersApiSlice = apiSlice.injectEndpoints({
                     ]
                 } else return [{ type: 'User', id: 'LIST' }]
             }
+        }),
+        getOffice: builder.query({
+
+        }),
+        updateUser: builder.mutation({
+            query: data => ({
+                url: '/users/update',
+                method: 'PATCH',
+                body: {
+                    ...data,
+                }
+            }),
+            invalidatesTags: (result, error, arg) => [
+                { type: 'User', id: arg.id }
+            ]
+        }),
+        suspendUser: builder.mutation({
+            query: UserID => ({
+                url: '/users/suspend',
+                method: 'PATCH',
+                body: {UserID}
+            })
         })
     })
 })
 export const {
     useGetUsersQuery,
+    useUpdateUserMutation,
+    useSuspendUserMutation
 } = usersApiSlice
 
 export const selectUsersResult = usersApiSlice.endpoints.getUsers.select()
 
 //creates memoized selector
 const selectUsersData = createSelector(
-    selectUsersResult, 
-    usersResult => usersResult.data 
-// normalized state object with ids & entities
+    selectUsersResult,
+    usersResult => usersResult.data
+    // normalized state object with ids & entities
 )
 
 export const {

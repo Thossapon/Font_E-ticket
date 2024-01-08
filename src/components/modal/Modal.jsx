@@ -15,8 +15,12 @@ import Avatar from "@mui/material/Avatar";
 import HandymanIcon from "@mui/icons-material/Handyman";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
+import { useUpdateTicketStatusMutation } from '../../features/ticket/ticketApiSlice';
+
 
 import axios from "axios";
+import { useSelector } from 'react-redux';
+import { selectCurrentToken } from '../../features/auth/authSlice';
 const style = {
   position: "absolute",
   top: "48%",
@@ -40,7 +44,17 @@ const AddModal = ({ TrackID }) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const id = TrackID;
   const navigate = useNavigate();
+  const token = useSelector(selectCurrentToken)
+
+  const [status , setStatus] = useState({
+      token: token,
+      StatusID : id,
+      StatusName:"",
+      StatusDescription:"",
+      UpdateDate : ""
+  })
   const [update, setUpdate] = useState({
     StatusName: '',
     StatusDescription: '',
@@ -49,17 +63,15 @@ const AddModal = ({ TrackID }) => {
   });
   // handlechange
   const handleChange = (e) => {
-    setUpdate((prev) => ({ ...prev, [e.target.name]: e.target.value }))
-    console.log(update);
+    setStatus((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+    console.log(status);
   }
-
-
   // call api
   const handleClick = async (e) => {
     e.preventDefault();
     try {
       handleClose();
-      await axios.put(`http://172.16.10.151:8800/api/task/update/${TrackID}`, update, { withCredentials: true })
+      await axios.put(`http://172.16.10.151:8800/api/task/update/${``}`, update, { withCredentials: true })
       navigate(`/tracking`);
     } catch (error) {
       console.log(error)

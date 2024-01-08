@@ -14,13 +14,17 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider} from '@mui/system';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
+
+
 
 const errorToast = () => toast('Incorrect Username or Password ! Please Try Again');
 
 
 
+
 const Login = () => {
+
     const userRef = useRef();
     const errRef = useRef();
     const [username, setUsername] = useState('');
@@ -51,14 +55,15 @@ const Login = () => {
             if (!err.status) {
                 setErrMsg('No Server Response');
             } else if (err.status === 400) {
-                setErrMsg('Missing Username or Password');
+                setErrMsg('กรอกข้อมูลให้ครบ');
+                toast.error(errMsg)
             } else if (err.status === 401) {
                 toast.error(`ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง`)
                 // setErrMsg('Unauthorized');
             } else {
                 setErrMsg(err.data?.message);
             }
-            errRef.current.focus();
+            // errRef.current.focus();
         }
     }
 
@@ -71,7 +76,7 @@ const Login = () => {
     return (
         <ThemeProvider>
             <Grid container component="main" sx={{ height: '110vh' }}>
-                <p ref={errRef} className={errClass} aria-live="assertive">{errMsg}</p>
+                {/* <p ref={errRef} className={errClass} aria-live="assertive">{errMsg}</p> */}
                 <CssBaseline />
                 <Grid item xs={false} sm={4} md={7} sx={{
                     backgroundImage: 'url(https://png.pngtree.com/background/20230617/original/pngtree-miniature-3d-render-of-a-workstation-picture-image_3697219.jpg)',
@@ -99,8 +104,8 @@ const Login = () => {
                             Sign in
                         </Typography>
                         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-                            <TextField margin='normal' ref={userRef} required fullWidth id='username' name='username' value={username} onChange={handleUserInput} label="Username"  />
-                            <TextField type="password" margin='normal' required fullWidth id='password' name='password' onChange={handlePwdInput} label="Password"  value={password} />
+                            <TextField margin='normal' ref={userRef} required fullWidth id='username' name='username' value={username} onChange={handleUserInput} label="ชื่อผู้ใช้งาน" placeholder="รูปแบบ (ชื่อจริง.นามสกุลตัวแรก) เช่น somsak.a"/>
+                            <TextField type="password" margin='normal' required fullWidth id='password' name='password' onChange={handlePwdInput} label="รหัสผ่าน"  value={password} />
                             <label htmlFor="persist" className="form__persist">
                                 <input
                                     type="checkbox"
@@ -109,7 +114,7 @@ const Login = () => {
                                     onChange={handleToggle}
                                     checked={persist}
                                 />
-                                Trust This Device
+                                คงอยู่ในระบบ
                             </label>
                             <Button
                                 type="submit"

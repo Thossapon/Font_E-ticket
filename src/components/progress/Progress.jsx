@@ -10,13 +10,13 @@ const Progress = (props) => {
         <div>
             <ul>
                 <li>
+                    {props.slug ? <AddModal TrackID={props.data?.TrackID} /> : null}
                     <div>
-                        <h2 style={{ color: '#ffb703' }}> {props.data.StatusName} 👨🏻‍💻</h2>
-                        <p style={{ color: '#023047' }}>{props.data.StatusDescription} 👨🏻‍💻</p>
+                        <h2 style={{ color: '#ffb703' }}> สถานะ : {props.data.StatusName} 👨🏻‍💻</h2>
+                        <p style={{ color: '#023047' }}>รายละเอียด : {props.data.StatusDescription} 👨🏻‍💻</p>
                         <time style={{ color: "#8ecae6" }}>{props.data.CreateDate}</time>
-
                     </div>
-                    {/* {props.slug === 1 ? <AddModal TrackID={props.data[0]?.TrackID} /> : null}
+                    {/* 
                     {
                         props.data.length > 2 ?
                             props.data?.map((item) => (

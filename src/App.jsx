@@ -21,9 +21,9 @@ import User from "./components/user/User";
 import Login from "./features/auth/Login";
 import PersistLogin from "./features/auth/PersistLogin";
 import useAuth from "./hooks/useAuth";
+import ErrorPage from "./components/error/ErrorPage";
 import { ROLES } from './config/roles'
 import TicketList from "./features/ticket/TicketList";
-
 function App() {
   const queryClient = new QueryClient()
   const Layout = () => {
@@ -51,7 +51,10 @@ function App() {
 
   // add role based for login
   const router = createBrowserRouter([
-
+    {
+      path:'*',
+      element:<ErrorPage/>
+    },
     //?Public (`Register Page`)
     {
       path: '/register',
@@ -66,7 +69,7 @@ function App() {
       //#all (`Persist Data to prevent refresh`)
       path: '/',
       element: (
-        <PersistLogin />
+          <PersistLogin />
       ),
       //#all (`children path & element`)
       children: [
@@ -105,7 +108,6 @@ function App() {
                   <RequireAuth allowRoles={[ROLES.Admin, ROLES.Staff]} />
                   <PendingTask />
                 </div>
-
               )
             }
             ,
@@ -114,13 +116,13 @@ function App() {
               path: '/report',
               element: (
                 <div>
-                  <RequireAuth RequireAuth allowRoles={[ROLES.Admin]} />
+                  <RequireAuth RequireAuth allowRoles={[ROLES.Admin,ROLES.Staff]} />
                   <Report />
                 </div>
               )
             },
             {
-              //#admin (`For User Management`)
+              //#admin (`for user management `)
               path: '/manage',
               element: (
                 <div>

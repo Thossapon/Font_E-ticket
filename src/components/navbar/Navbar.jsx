@@ -63,7 +63,9 @@ const Navbar = () => {
     <div className="navbar" ref={menuRef}>
       <div className="logo">
         <img src="logo.svg" alt="" />
-        <span>E-ticket</span>
+        <Link to={`/`}>
+          <span>E-ticket</span>
+        </Link>
       </div>
       <div className="icons">
         <div className="user" onClick={() => setOpen(!open)}>

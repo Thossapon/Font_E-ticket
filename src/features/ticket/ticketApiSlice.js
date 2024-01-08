@@ -1,7 +1,6 @@
 import {
     createSelector,
     createEntityAdapter,
-    legacy_createStore
 } from "@reduxjs/toolkit";
 import { apiSlice } from "../../app/api/apiSlice"
 
@@ -65,7 +64,7 @@ export const ticketApiSlice = apiSlice.injectEndpoints({
         getPending: builder.query({
             query: (data) => ({
                 url: '/ticket/pending',
-                body:{...data},
+                body: { ...data },
                 method: 'POST',
                 validateStatus: (response, result) => {
                     console.log(result);
@@ -73,7 +72,24 @@ export const ticketApiSlice = apiSlice.injectEndpoints({
                 },
             })
         }),
-
+        acceptTicket: builder.mutation({
+            query: ({ params, data }) => ({
+                url: `/ticket/accept/${params}`,
+                body: { ...data },
+                method: "POST",
+                validateStatus: (response, result) => {
+                    console.log(result);
+                    return response.status === 200 && !result.isError
+                },
+            })
+        }),
+        updateTicketData: builder.mutation({
+            query: initialTicket => ({
+                url: `/ticket/update/data`,
+                body: { ...initialTicket },
+                method: "PUT",
+            })
+        }),
         addNewTicket: builder.mutation({
             query: initialTicket => ({
                 url: '/ticket/create',
@@ -86,13 +102,24 @@ export const ticketApiSlice = apiSlice.injectEndpoints({
                 { type: 'Ticket', id: "LIST" }
             ]
         }),
+        updateTicketStatus: builder.mutation({
+            query: initialTicket => ({
+                url: `/ticket/update/status`,
+                body: { ...initialTicket },
+                method: "PUT",
+            })
+        }),
+
     })
 });
 export const {
     useGetTicketQuery,
     useGetPendingQuery,
     useGetInventoryQuery,
-    useAddNewTicketMutation
+    useAddNewTicketMutation,
+    useAcceptTicketMutation,
+    useUpdateTicketDataMutation,
+    useUpdateTicketStatusMutation
 } = ticketApiSlice
 export const selectTicketResult = ticketApiSlice.endpoints.getTicket.select()
 

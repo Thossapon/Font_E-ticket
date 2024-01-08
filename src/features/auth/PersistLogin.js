@@ -4,6 +4,7 @@ import { useRefreshMutation } from "./authApiSlice"
 import usePersist from "../../hooks/usePersist"
 import { useSelector } from 'react-redux'
 import { selectCurrentToken } from "./authSlice"
+import ErrorPage from "../../components/error/ErrorPage"
 
 const PersistLogin = () => {
 
@@ -51,21 +52,28 @@ const PersistLogin = () => {
     let content
     if (!persist) { // persist: no
         console.log('no persist')
-        content = token ? <Outlet /> :
-            <p className='errmsg'>
-                {`${error?.data?.message} - `}
-                <Link to="/login">Please login again</Link>.
-            </p>
+        content = token ? <Outlet />
+            : <div>
+                <ErrorPage/>
+                <p className='errmsg'>
+                    {`${error?.data?.message} x `}
+                    <Link to="/login">Please login again</Link>.
+                </p>
+            </div>
+
     } else if (isLoading) { //persist: yes, token: no
         console.log('loading')
         content = <p>Loading...</p>
     } else if (isError) { //persist: yes, token: no
         console.log(error.message)
         content = (
-            <p className='errmsg'>
-                {`${error?.data?.message} - `}
-                <Link to="/login">Please login again</Link>.
-            </p>
+            <div>
+                <ErrorPage message={error?.data?.message} path='login'/>
+                {/* <p className='errmsg'>
+                    {`${error?.data?.message} - `}
+                    <Link to="/login">Please login again</Link>.
+                </p> */}
+            </div>
         )
     } else if (isSuccess && trueSuccess) { //persist: yes, token: yes
         console.log('success')
