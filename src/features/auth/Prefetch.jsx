@@ -1,21 +1,18 @@
-import {store} from '../../app/store'
+import { store } from "../../app/store"
 import { usersApiSlice } from '../users/usersApiSlice'
-import { useEffect } from 'react'
+import { useEffect } from "react"
 import { Outlet } from 'react-router-dom'
-
-
-const Prefetch = () => {
+import useAuth from "../../hooks/useAuth"
+const Prefetch = ({ allowRoles }) => {
+    const { Role } = useAuth();
     useEffect(() => {
-        console.log(`subscribing`);
-        const users = store.dispatch(usersApiSlice.endpoints.getUsers.initiate());
-        return () => {
-            console.log(`unsubscribing`)
-            users.unsubscribe()
+        if (allowRoles.includes(Role)) {
+            store.dispatch(usersApiSlice.util.prefetch('getUsers', 'usersList', { force: true }));
+            // store.dispatch(usersApiSlice.util.prefetch('getOffices', 'officesList', { force: true }));
         }
     }, [])
-    return (
-        <Outlet />
-    )
+    return <Outlet />
 }
 
-export default Prefetch
+
+export default Prefetch;

@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Navigate, useLocation } from 'react-router-dom'
-import moment from 'moment'
+import { Navigate, useLocation, useParams } from 'react-router-dom'
 import 'moment-timezone'
 import 'moment/locale/th'
 import {
     Avatar,
-    Typography,
     Grid,
     Box,
     Button,
@@ -17,58 +15,87 @@ import {
     Divider,
     TextField,
     Switch,
-    Stack,
+    Select,
     Autocomplete,
+    MenuItem,
+    Stack,
 } from '@mui/material'
-import { selectCurrentToken } from '../../features/auth/authSlice'
-import { useNavigate } from 'react-router-dom'
-import { useUpdateUserMutation, useSuspendUserMutation } from '../../features/users/usersApiSlice'
+import { useUpdateUserMutation, useSuspendUserMutation, useGetUsersQuery } from '../../features/users/usersApiSlice'
 import toast from 'react-hot-toast'
 import { useSelector } from 'react-redux'
+import axios from 'axios'
+import { selectCurrentToken } from '../../features/auth/authSlice'
+import { memo } from 'react'
+
+
 const User = () => {
-
-
 
     // useLocation for stable data :D
     const state = useLocation()?.state;
-    const [user, setUser] = useState(state ? state : {})
+    const [chillUser, setChillUser] = useState(state ? state : {})
+    const [fakeUser, setFakeUser] = useState([]);
+    let { id } = useParams();
+    const userID = parseInt(id)
+    const token = useSelector(selectCurrentToken)
+
+
+
+    console.log(`check id : ${id}`);
+    // const fetchUser = async (id, token) => {
+    //     await axios.get(`http://172.16.10.151:3500/api/users/${id}`).then((res) => setFakeUser(res.data));
+    // }
     const [checked, setChecked] = useState(false);
+
     const handleCheck = async (event) => {
+
         setChecked(event.target.checked);
         try {
-            await suspendUser(user.UserID);
+            await suspendUser(user?.UserID);
             toast.success(`Toggle Successfully`)
         } catch (error) {
             console.log(error);
         }
     };
+    const { user, suckID } = useGetUsersQuery("usersList", {
+        selectFromResult: ({ data }) => ({
+            user: data?.entities[id],
+            suckID: data?.ids,
+        })
+    });
+
     const [updateUserData, { isLoading, isSuccess, isError, error },] = useUpdateUserMutation({
         pollingInterval: 15000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
-    const [suspendUser, { userLoading, userSuccess, userError, checkError }] = useSuspendUserMutation({})
+    const [suspendUser, { userLoading, userSuccess, userError, checkError }] = useSuspendUserMutation({
+        pollingInterval: 15000,
+        refetchOnFocus: true,
+        refetchOnMountOrArgChange: true
+    })
     const [update, setUpdate] = useState({
-        UserID: user.UserID
+        UserID: user?.UserID || userID
     });
+    console.log(`this is update : ${update?.UserID}`);
+    const [suspend, useSuspend] = useState({
+        UserID: userID,
+        ActiveStatus: user?.ActiveStatus || 0
+    })
     const handleChange = (e) => {
         setUpdate((prev) => ({ ...prev, [e.target.name]: e.target.value }))
     }
-    const navigate = useNavigate();
     useEffect(() => {
         if (isSuccess) {
-            toast.success('อัพเดตสำเร็จ')
             setUpdate({
-                UserID: user.UserID,
-                FirstName: '',
-                LastName: '',
-                Email: '',
-                Telephone: ''
+                UserID: user?.UserID || userID,
+                FirstName: "",
+                LastName: "",
+                Email: "",
+                Telephone: ""
             })
-            navigate(`/manage`)
+            toast.success(`บันทึกสำเร็จ`)
         } else if (userSuccess) {
             toast.success('อัพเดตสำเร็จ')
-            navigate(`/manage`)
         }
     }, [isSuccess])
 
@@ -83,11 +110,29 @@ const User = () => {
     const handleSuspend = async (e) => {
         try {
             e.preventDefault();
-            await suspendUser(user.UserID);
-            toast.success(`Update Successfully`)
+            await updateUserData(suspend);
         } catch (error) {
+            console.log(error)
         }
     }
+    const inputStyle = {
+        width: '100%',
+        padding: '12px',
+        border: '1px solid #ced4da',
+        borderRadius: '4px',
+        outline: 'none',
+        transition: 'border-color 0.2s',
+    };
+
+    const labelStyle = {
+        position: 'absolute',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        left: '12px',
+        fontSize: '14px',
+        color: '#495057',
+        transition: 'top 0.2s, font-size 0.2s',
+    };
     return (
         <>
             <Box
@@ -114,16 +159,16 @@ const User = () => {
                                             }}
                                         >
                                             <Avatar
-                                                src={user.avatar}
+                                                src={user?.avatar}
                                                 sx={{
                                                     height: 80,
                                                     mb: 2,
                                                     width: 80
+                                                    
                                                 }}
                                             />
-                                            <h2>{user.FirstName}</h2>
-                                            <p>สำนักงานอัยการภาค 8</p>
-                                            <p style={{ color: 'grey' }}>นักเจ้าคอมพิวเตอร์</p>
+                                            <h2>{user?.FirstName}</h2>
+                                            <p>{user?.OfficeName}</p>
                                         </Box>
                                     </CardContent>
                                     <Divider />
@@ -131,16 +176,16 @@ const User = () => {
                                         <Button
                                             fullWidth
                                             variant="text"
-                                            color={user.ActiveStatus === 0 ? 'warning' : 'primary'}
+                                            color={user?.ActiveStatus === 0 ? 'warning' : 'primary'}
                                             onClick={handleSuspend}
                                         >
-                                            {user.ActiveStatus === 0 ? 'ระงับผู้ใช้' : 'เปิดการใช้งาน'}
+                                            {user?.ActiveStatus === 0 ? 'ระงับผู้ใช้' : 'เปิดการใช้งาน'}
                                         </Button>
-                                        <Switch
+                                        {/* <Switch
                                             checked={checked}
                                             onChange={handleCheck}
                                             inputProps={{ 'aria-label': 'controlled' }}
-                                        />
+                                        /> */}
                                     </CardActions>
                                 </Card>
                             </Grid>
@@ -151,32 +196,27 @@ const User = () => {
                                     <CardContent sx={{ pt: 0 }} >
                                         <Grid container spacing={3}>
                                             <Grid item md={6} xs={12} lg={6}>
-                                                <TextField defaultValue={user.FirstName} onChange={handleChange} name='FirstName' fullWidth label="ชื่อ" placeholder={user.FirstName} />
+                                                <TextField defaultValue={user?.FirstName || ""} onChange={handleChange} name='FirstName' fullWidth label="ชื่อ" placeholder={user?.FirstName || ''} />
                                             </Grid>
                                             <Grid item md={6} xs={12} lg={6}>
-                                                <TextField defaultValue={user.LastName} onChange={handleChange} name="LastName" fullWidth label="นามสกุล" placeholder={user.LastName} />
+                                                <TextField defaultValue={user?.LastName || ''} onChange={handleChange} name="LastName" fullWidth label="นามสกุล" placeholder={user?.LastName || ''} />
                                             </Grid>
-                                            {/* <Grid item md={6} xs={12} lg={12}>
-                                                <TextField defaultValue={user.PersonID} onChange={handleChange} fullWidth label="เลขบัตรประชาชน" placeholder={''} />
-                                            </Grid> */}
-                                            {/* <Grid item md={6} xs={12} lg={7}>
-                                                <Autocomplete
-                                                    disablePortal
-                                                    options={classicHipHopAlbums}
-                                                    sx={{ width: '100%' }}
-                                                    onChange={``}
-                                                    // onChange={(event, newValue) => {
-                                                    //     // console.log(newValue);
-                                                    //     // setTaskData((prev) => ({ ...prev, InventoryTypeName: newValue }))
-                                                    // }}
-                                                    renderInput={(params) => <TextField {...params} label="สำนักงาน" />}
-                                                />
-                                            </Grid> */}
                                             <Grid item md={6} xs={12} lg={7}>
-                                                <TextField defaultValue={user.Email} onChange={handleChange} type="email" name="Email" fullWidth label="อีเมลล์" placeholder={''} />
+                                                <TextField defaultValue={user?.Email || ''} onChange={handleChange} type="email" name="Email" fullWidth label="อีเมลล์" placeholder={user?.Email || ''} />
                                             </Grid>
                                             <Grid item md={6} xs={12} lg={5}>
-                                                <TextField defaultValue={user.Telephone} onChange={handleChange} type="text" fullWidth name="Telephone" label="เบอร์โทรศัพท์" placeholder={user.Telephone} />
+                                                <TextField defaultValue={user?.Telephone || ''} onChange={handleChange} type="text" fullWidth name="Telephone" label="เบอร์โทรศัพท์" placeholder={user?.Telephone || ''} />
+                                            </Grid>
+                                            <Grid item md={6} xs={12} lg={5}>
+                                                <TextField defaultValue={user?.PersonID || ''} onChange={handleChange} type="text" fullWidth name="PersonID" label="เลขบัตรประชาชน" placeholder={user?.PersonID || ''} />
+                                            </Grid>
+                                            <Grid item md={6} xs={12} lg={7}>
+                                                {/* <Autocomplete
+                                                    disablePortal
+                                                    option={''}
+                                                    fullWidth 
+                                                    renderInput={(params) => <TextField {...params} label="สำนักงาน" />}
+                                                /> */}
                                             </Grid>
                                             <Grid item md={12} xs={12} lg={12}>
                                                 <Button variant='contained' fullWidth onClick={handleSubmit}>
@@ -185,45 +225,13 @@ const User = () => {
                                             </Grid>
                                         </Grid>
                                     </CardContent>
-
                                 </Card>
                             </Grid>
                         </Grid>
                     </Stack>
                 </Container>
             </Box>
-
-
-
-            {/* <div>
-                <Grid container>
-                    <Grid item>
-                        <TextField
-                        defaultValue={user.Username}
-                        onChange={handleChange}
-                        name='Username'
-                        />
-                    </Grid>
-                    <Grid item>
-                        <TextField
-                        defaultValue={user.FirstName}
-                        onChange={handleChange}
-                        name='FirstName'
-                        />
-                    </Grid>
-                    <Grid item>
-                        <TextField
-                        defaultValue={user.LastName}
-                        onChange={handleChange}
-                        name='LastName'
-                        />
-                    </Grid>
-                </Grid>
-            </div> */}
-
         </>
-
     )
 }
-
 export default User

@@ -1,17 +1,13 @@
-import { createBrowserRouter, RouterProvider, Outlet, Navigate } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import "./styles/global.scss";
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AuthContext } from "./context/authContext";
 import Navbar from './components/navbar/Navbar'
 import Home from './pages/home/Home'
-import Tracking from "./pages/tracking/Tracking";
 import Task from './components/task/Task'
-import Unauthorized from "./components/unauthorized/Unauthorized";
 import RequireAuth from "./components/requireAuth/RequireAuth";
 import Create from "./pages/create/Create";
 import Footer from "./components/footer/Footer";
 import Register from "./pages/register/Register";
-import "./styles/global.scss";
 import Menu from "./components/menu/Menu";
 import PendingTask from "./pages/pending/PendingTask";
 import Report from "./pages/report/Report";
@@ -20,15 +16,17 @@ import Manual from "./pages/manual/Manual";
 import User from "./components/user/User";
 import Login from "./features/auth/Login";
 import PersistLogin from "./features/auth/PersistLogin";
-import useAuth from "./hooks/useAuth";
+import Prefetch from "./features/auth/Prefetch";
 import ErrorPage from "./components/error/ErrorPage";
 import { ROLES } from './config/roles'
 import TicketList from "./features/ticket/TicketList";
+import useAuth from "./hooks/useAuth";
 function App() {
+  const {Role} = useAuth();
   const queryClient = new QueryClient()
   const Layout = () => {
     return (
-      <div class="main">
+      <div className="main">
         <div className="custom-navbar">
           <Navbar />
         </div>
@@ -46,14 +44,15 @@ function App() {
       </div>
     )
   }
-  //? Public Page
-  //# Protected Page
+
+  //? Public Page < No Need to Login />
+  //# Protected Page < Need to Login First />
 
   // add role based for login
   const router = createBrowserRouter([
     {
-      path:'*',
-      element:<ErrorPage/>
+      path: '*',
+      element: <ErrorPage />
     },
     //?Public (`Register Page`)
     {
@@ -69,7 +68,7 @@ function App() {
       //#all (`Persist Data to prevent refresh`)
       path: '/',
       element: (
-          <PersistLogin />
+        <PersistLogin />
       ),
       //#all (`children path & element`)
       children: [
@@ -80,83 +79,81 @@ function App() {
           children: [
             {
               //#all (`Homepage`)
-              path: '/',
-              element: (
-                <Home />
-              )
-            },
-            //#all (`Create Ticket`)
-            {
-              path: '/create',
-              element: <Create />
-            },
-            //#all (`Track all ticket`)
-            {
-              path: '/tracking',
-              element: (<TicketList />)
-            },
-            //#all (`view each ticket`)
-            {
-              path: '/tracking/:id',
-              element: <Task />
-            },
-            //#admin,staff (`all pending ticket`)
-            {
-              path: '/pending',
               element: (
                 <div>
-                  <RequireAuth allowRoles={[ROLES.Admin, ROLES.Staff]} />
-                  <PendingTask />
+                  <Prefetch allowRoles={[ROLES.Admin]}/>
                 </div>
-              )
-            }
-            ,
-            {
-              //#admin (`for report`)
-              path: '/report',
-              element: (
-                <div>
-                  <RequireAuth RequireAuth allowRoles={[ROLES.Admin,ROLES.Staff]} />
-                  <Report />
-                </div>
-              )
-            },
-            {
-              //#admin (`for user management `)
-              path: '/manage',
-              element: (
-                <div>
-                  <RequireAuth allowRoles={[ROLES.Admin]} />
-                  <Manage />
-                </div>
-              )
-            },
-            {
-              path: '/manage/:id',
-              element: <User />
-            },
-            //#all (`User Manual`)
+              ),
+              children: [
+                {
+                  //#all (`Homepage`)
+                  path: '/',
+                  element: (
+                    <Home />
+                  )
+                },
+                //#all (`Create Ticket`)
+                {
+                  path: '/create',
+                  element: <Create />
+                },
+                //#all (`Track all ticket`)
+                {
+                  path: '/tracking',
+                  element: (<TicketList />)
+                },
+                //#all (`view each ticket`)
+                {
+                  path: '/tracking/:id',
+                  element: <Task />
+                },
+                //#admin,staff (`all pending ticket`)
+                {
+                  path: '/pending',
+                  element: (
+                    <div>
+                      <RequireAuth allowRoles={[ROLES.Admin, ROLES.Staff]} />
+                      <PendingTask />
+                    </div>
+                  )
+                }
+                ,
+                {
+                  //#admin (`for report`)
+                  path: '/report',
+                  element: (
+                    <div>
+                      <RequireAuth allowRoles={[ROLES.Admin, ROLES.Staff]} />
+                      <Report />
+                    </div>
+                  )
+                },
+                {
+                  //#admin (`for user management `)
+                  path: '/manage',
+                  element: (
+                    <div>
+                      <RequireAuth allowRoles={[ROLES.Admin]} />
+                      <Manage />
+                    </div>
+                  )
+                },
+                {
+                  path: '/manage/:id',
+                  element: <User />
+                },
+                //#all (`User Manual`)
 
-            {
-              path: '/manual',
-              element: <Manual />
-            }
-
+                {
+                  path: '/manual',
+                  element: <Manual />
+                }
+              ]
+            },
           ]
         },
       ]
     },
-    // {
-    //   path: '/',
-    //   element:<PersistLogin/>,
-    //   children: [
-    //     {
-    //       path: '/reduxuser',
-    //       element: <UsersList />
-    //     },
-    //   ]
-    // },
-
   ])
   return <RouterProvider router={router} />
 }

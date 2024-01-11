@@ -17,12 +17,6 @@ import { ThemeProvider} from '@mui/system';
 import toast from 'react-hot-toast';
 
 
-
-const errorToast = () => toast('Incorrect Username or Password ! Please Try Again');
-
-
-
-
 const Login = () => {
 
     const userRef = useRef();

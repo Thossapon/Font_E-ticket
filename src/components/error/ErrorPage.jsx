@@ -1,8 +1,7 @@
 import WestIcon from '@mui/icons-material/West';
 import EastIcon from '@mui/icons-material/East';
-import { Box, Button, Container, SvgIcon, Typography } from '@mui/material';
+import { Box, Button, Container, SvgIcon} from '@mui/material';
 import { Link } from 'react-router-dom';
-
 const ErrorPage = ({message,path}) => {
     return (
         <>

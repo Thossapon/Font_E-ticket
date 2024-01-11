@@ -109,6 +109,17 @@ export const ticketApiSlice = apiSlice.injectEndpoints({
                 method: "PUT",
             })
         }),
+        reportTicker: builder.mutation({
+            query: (data) => ({
+                url: '/report/search',
+                body: { ...data },
+                method: 'POST',
+                validateStatus: (response, result) => {
+                    console.log(result);
+                    return response.status === 200 && !result.isError
+                },
+            }),
+        })
 
     })
 });
@@ -119,7 +130,8 @@ export const {
     useAddNewTicketMutation,
     useAcceptTicketMutation,
     useUpdateTicketDataMutation,
-    useUpdateTicketStatusMutation
+    useUpdateTicketStatusMutation,
+    useReportTickerMutation
 } = ticketApiSlice
 export const selectTicketResult = ticketApiSlice.endpoints.getTicket.select()
 

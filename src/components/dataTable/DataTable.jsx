@@ -73,14 +73,14 @@ const DataTable = (props) => {
               <div style={{ display: 'flex', gap: '10px' }}>
 
                 {/* กำหนดค่า state เท่ากับ current row */}
-                  <Link to={`/tracking/${params.row.TrackID}`} state={params.row}>
-                    <Button variant='contained' size="small" color="warning" startIcon={<EditIcon/>}>
-                      แก้ไข
-                    </Button>
-                  </Link>
-                  <Button variant='contained' size="small" color='success' state={params.row} startIcon={<DoneIcon/>}>
-                    เสร็จงาน
+                <Link to={`/tracking/${params.row.TrackID}`} state={params.row}>
+                  <Button variant='contained' size="small" color="warning" startIcon={<EditIcon />}>
+                    แก้ไข
                   </Button>
+                </Link>
+                <Button variant='contained' size="small" color='success' state={params.row} startIcon={<DoneIcon />}>
+                  เสร็จงาน
+                </Button>
               </div>
             ) : props.slug === 'pending' ?
               <div style={{ display: 'flex', gap: '10px' }}>
@@ -107,7 +107,14 @@ const DataTable = (props) => {
                       แก้ไขผู้ใช้งาน
                     </Button>
                   </Link>
-                </div> : false
+                </div> : props.slug === 'report' ? <div style={{ display: 'flex', gap: '10px' }}>
+                {/* send state to ongoing location  */}
+                <Link to={``} state={``}>
+                  <Button variant='contained' color='primary' size='medium'>
+                    ดูรายงาาน 
+                  </Button>
+                </Link>
+              </div> : null
           }
         </div>
       )
@@ -122,6 +129,8 @@ const DataTable = (props) => {
         sx={{
           "& .MuiDataGrid-root": {
             border: "none",
+            borderRadius:3,
+            backgroundColor:'whtiesmoke'
           },
           "& .MuiDataGrid-cell": {
             borderBottom: "none",
@@ -130,7 +139,7 @@ const DataTable = (props) => {
             color: '#2e7c67',
           },
           "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: "darkblue",
+            backgroundColor: "#0077b6",
             borderBottom: "none",
             color: 'whitesmoke'
           },
@@ -144,28 +153,25 @@ const DataTable = (props) => {
           },
         }}
       >
-        <DataGrid
-          {...data}
-          sortModel={defaultSortModel}
-          sx={{ overflowX: 'scroll' }}
-          className="dataGrid"
-          columns={[...props.columns, actionColumn]}
-          rows={props.rows}
-          getRowId={(row) => row[props.columns[0].field]}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 20,
+          <DataGrid
+            sortModel={defaultSortModel}
+            className="dataGrid"
+            columns={[...props.columns, actionColumn]}
+            rows={props.rows}
+            getRowId={(row) => row[props.columns[0].field]}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 20,
+                },
               },
-            },
-          }}
-          pageSizeOptions={[5, 10, 25]}
-          hideScrollBar={false}
-          slots={{
-            toolbar: GridToolbar,
-          }}
-
-        />
+            }}
+            pageSizeOptions={[5, 10, 25]}
+            hideScrollBar={false}
+            slots={{
+              toolbar: GridToolbar,
+            }}
+          />
       </Box>
     </div >
   )

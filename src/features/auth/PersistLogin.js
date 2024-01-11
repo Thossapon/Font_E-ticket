@@ -5,7 +5,7 @@ import usePersist from "../../hooks/usePersist"
 import { useSelector } from 'react-redux'
 import { selectCurrentToken } from "./authSlice"
 import ErrorPage from "../../components/error/ErrorPage"
-
+import { CircularProgress } from "@mui/material"
 const PersistLogin = () => {
 
     const [persist] = usePersist()
@@ -22,9 +22,9 @@ const PersistLogin = () => {
         error
     }] = useRefreshMutation()
 
-
     useEffect(() => {
 
+        // config this to  persist or not 
         if (effectRan.current === true || process.env.NODE_ENV !== 'development') { // React 18 Strict Mode
 
             const verifyRefreshToken = async () => {
@@ -54,7 +54,7 @@ const PersistLogin = () => {
         console.log('no persist')
         content = token ? <Outlet />
             : <div>
-                <ErrorPage/>
+                <ErrorPage />
                 <p className='errmsg'>
                     {`${error?.data?.message} x `}
                     <Link to="/login">Please login again</Link>.
@@ -63,16 +63,15 @@ const PersistLogin = () => {
 
     } else if (isLoading) { //persist: yes, token: no
         console.log('loading')
-        content = <p>Loading...</p>
+        content =
+            <div style={{display:'flex' , flexDirection:'row',gap:'10px'}}>
+                <CircularProgress />
+            </div>
     } else if (isError) { //persist: yes, token: no
         console.log(error.message)
         content = (
             <div>
-                <ErrorPage message={error?.data?.message} path='login'/>
-                {/* <p className='errmsg'>
-                    {`${error?.data?.message} - `}
-                    <Link to="/login">Please login again</Link>.
-                </p> */}
+                <ErrorPage message={error?.data?.message} path='login' />
             </div>
         )
     } else if (isSuccess && trueSuccess) { //persist: yes, token: yes

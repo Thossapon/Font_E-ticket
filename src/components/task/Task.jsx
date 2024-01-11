@@ -13,8 +13,10 @@ import { TabContext, TabList, TabPanel } from '@mui/lab'
 import { Tab } from '@mui/material'
 import useAuth from '../../hooks/useAuth'
 import Progress from '../progress/Progress';
-import { AuthContext } from '../../context/authContext';
 import UpdateTicket from '../../features/ticket/UpdateTicket';
+
+
+
 const Task = () => {
 
   //# รับค่ามาจาก state มาจาก ROW ของ Datagrid โดยใช้ useLocation (react-router-dom)
@@ -31,7 +33,6 @@ const Task = () => {
     }
   ]);
 
-
   //useless
 
   // for all location reference
@@ -43,10 +44,10 @@ const Task = () => {
   // Format Date & TrackID
 
   const trackIdString = task.TrackID?.toString();
-  const numberOfDigits = trackIdString.length;
+  const numberOfDigits = trackIdString?.length;
   const leadingZeros = numberOfDigits < 4 ? '0'.repeat(4 - numberOfDigits) : '';
   const formattedTrackID = `${leadingZeros}${trackIdString}`;  // Concatenate leading zeros and the original TrackID
-
+  
   const inventory = [
     { "InventoryTypeID": "1", "InventoryTypeName": "CPU", "ActiveStatus": "0" },
     { "InventoryTypeID": "2", "InventoryTypeName": "MONITOR", "ActiveStatus": "0" },
@@ -93,7 +94,7 @@ const Task = () => {
         <div className="info">
           <div className="topInfo">
             <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" />
-            <h1 style={{ color: '#023047' }}># {formattedTrackID}</h1>
+            <h1 style={{ color: '#023047' }}># {formattedTrackID !== undefined || formattedTrackID !== "" ? formattedTrackID : "เคสล่องหน"}</h1>
             {isAdmin || isStaff
               ? <UpdateTicket task={task} />
               : null}

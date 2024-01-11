@@ -1,6 +1,6 @@
 import "./navbar.scss";
 import { useState, useEffect, useContext, useRef } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { AuthContext } from "../../context/authContext";
 import useAuth from "../../hooks/useAuth";
 import { useLoginMutation, useSendLogoutMutation } from "../../features/auth/authApiSlice";
@@ -54,11 +54,12 @@ const Navbar = () => {
     try {
       sendLogout()
       toast.success('Logout Successfully')
+      navigate(`/login`)
     } catch (error) {
       console.log(error)
     }
   }
-  if (isSuccess) navigate(`/login`);
+  // if (isSuccess) navigate(`/login`);
   return (
     <div className="navbar" ref={menuRef}>
       <div className="logo">
@@ -70,7 +71,7 @@ const Navbar = () => {
       <div className="icons">
         <div className="user" onClick={() => setOpen(!open)}>
           <img
-            src="./user.svg"
+            src="logo_1.jpg"
             alt=""
           />
           <span>{Username}</span>

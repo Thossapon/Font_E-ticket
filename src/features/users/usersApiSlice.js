@@ -6,7 +6,6 @@ import { apiSlice } from "../../app/api/apiSlice"
 const usersAdapter = createEntityAdapter({
     selectId: user => user.UserID
 });
-
 const initialState = usersAdapter.getInitialState();
 export const usersApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
@@ -19,13 +18,12 @@ export const usersApiSlice = apiSlice.injectEndpoints({
             transformResponse: responseData => {
                 // console.log(responseData);
                 const loadUsers = responseData.map(user => {
-                    // console.log(user);
                     return user;
                 })
-                return usersAdapter.setAll(initialState, loadUsers)
+                return usersAdapter.setAll(initialState,loadUsers)
             },
             providesTags: (result, error, arg) => {
-                if (result?.UserID) {
+                if (result?.ids) {
                     return [
                         { type: 'User', id: 'LIST' },
                         ...result.ids.map(id => ({ type: 'User', id }))
@@ -33,8 +31,12 @@ export const usersApiSlice = apiSlice.injectEndpoints({
                 } else return [{ type: 'User', id: 'LIST' }]
             }
         }),
-        getOffice: builder.query({
-
+        getCurrentUser: builder.query({
+            query: (data) => `/users/${data}`,
+            validateStatus: (response, result) => {
+                console.log(`this is response : ${result}`)
+                return response.status === 200 && !result.error
+            },
         }),
         updateUser: builder.mutation({
             query: data => ({
@@ -52,15 +54,17 @@ export const usersApiSlice = apiSlice.injectEndpoints({
             query: UserID => ({
                 url: '/users/suspend',
                 method: 'PATCH',
-                body: {UserID}
+                body: { UserID }
             })
-        })
+        }),
+        
     })
 })
 export const {
     useGetUsersQuery,
     useUpdateUserMutation,
-    useSuspendUserMutation
+    useSuspendUserMutation,
+    useGetCurrentUserQuery
 } = usersApiSlice
 
 export const selectUsersResult = usersApiSlice.endpoints.getUsers.select()
